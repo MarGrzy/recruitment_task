@@ -2,10 +2,12 @@ package pl.mg.currConv.calculation;
 
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
 public class CalculationProcessor {
 
-    public Double calculate(final double amount, final String currency, final double currRate) {
-        return amount * currRate;
+    public BigDecimal calculate(final BigDecimal amount, final String currency, final BigDecimal currRate) {
+        return amount.multiply(currRate);
     }
 }

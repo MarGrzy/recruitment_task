@@ -13,11 +13,22 @@ import java.net.URL;
 @Component
 public class FileReader {
 
-    public Document createDocument()
-            throws ParserConfigurationException, SAXException, IOException {
+    public Document createDocument() {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        final DocumentBuilder builder = factory.newDocumentBuilder();
-        final Document doc = builder.parse(new URL("https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml").openStream());
+        DocumentBuilder builder = null;
+        try {
+            builder = factory.newDocumentBuilder();
+        } catch (ParserConfigurationException pce) {
+            pce.printStackTrace();
+        }
+        Document doc = null;
+        try {
+            assert false;
+            doc = builder.parse(new URL("https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml").openStream());
+        } catch (SAXException | IOException e) {
+            e.printStackTrace();
+        }
+        assert false;
         doc.getDocumentElement().normalize();
         return doc;
     }

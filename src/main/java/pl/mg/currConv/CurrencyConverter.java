@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.mg.currConv.api.DataManager;
 import pl.mg.currConv.calculation.CalculationProcessor;
-import pl.mg.currConv.interactionWithUser.InputReader;
-import pl.mg.currConv.interactionWithUser.OutputWriter;
+import pl.mg.currConv.io.InputReader;
+import pl.mg.currConv.io.OutputWriter;
 import pl.mg.currConv.model.UserInputDto;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Component
 public class CurrencyConverter {
@@ -28,18 +31,18 @@ public class CurrencyConverter {
 
         String currencyPattern = "[a-zA-Z]{3}";
 
-        final double inputAmount = userInput.getAmount();
+        final BigDecimal inputAmount = userInput.getAmount();
         final String currCode = userInput.getCurrencyCode();
-        final double currRate = Double.parseDouble(dataManager.getCurrencyData().get(userInput.getCurrencyCode()));
+        final BigDecimal currRate = dataManager.getCurrencyData().get(userInput.getCurrencyCode());
 
         if (dataManager.getCurrencyData().containsKey(userInput.getCurrencyCode())) {
-            final double result = (calculationProcessor.calculate(inputAmount, currCode, currRate));
-            final double roundedResult = Math.round(result * 100d) / 100d;
-            outputWriter.write("Amount in " + userInput.getCurrencyCode() + ": " + roundedResult);
+            final BigDecimal result = (calculationProcessor.calculate(inputAmount, currCode, currRate));
+            final BigDecimal roundedResult = result.setScale(2, RoundingMode.CEILING);
+            outputWriter.writeCurrencyConversionResult(userInput.getCurrencyCode(), roundedResult);
         } else if (userInput.getCurrencyCode().matches(currencyPattern)) {
-            outputWriter.write("Sorry, there is no such currency in database");
+            outputWriter.writeNoSuchCurrency();
         } else {
-            outputWriter.write("Wrong input data");
+            outputWriter.writeWrongInputData();
         }
     }
 }

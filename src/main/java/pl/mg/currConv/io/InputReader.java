@@ -1,9 +1,10 @@
-package pl.mg.currConv.interactionWithUser;
+package pl.mg.currConv.io;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.mg.currConv.model.UserInputDto;
 
+import java.math.BigDecimal;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -20,7 +21,7 @@ public class InputReader {
     public UserInputDto getUserInput() {
         Scanner scanner = new Scanner(System.in).useLocale(Locale.US);
         outputWriter.write("Please enter the amount in EUR");
-        final double amount = scanner.nextDouble();
+        final BigDecimal amount = scanner.nextBigDecimal();
         outputWriter.write("Please enter the currency code");
         outputWriter.write("(for example: USD, PLN, CZK)");
         final String currencyCode = scanner.next().toUpperCase();
